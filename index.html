@@ -6,10 +6,60 @@
     <title>Unity Web Player | ChibiGachaGotchi</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+	<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+
+  #unity-container {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #000;
+  }
+
+  @supports (height: 100dvh) {
+    #unity-container {
+      height: 100dvh !important;
+    }
+  }
+
+  #unity-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    background: #000;
+  }
+
+  #unity-loading-bar {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #unity-warning {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 10;
+  }
+
+  #unity-footer {
+    display: none;
+  }
+</style>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <canvas id="unity-canvas" tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -87,26 +137,32 @@
       // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
       // expected to change.
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
+     var meta = document.createElement('meta');
+		meta.name = 'viewport';
+		meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+		document.getElementsByTagName('head')[0].appendChild(meta);
 
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
-        canvas.className = "unity-mobile";
+		document.querySelector("#unity-container").className = "unity-fullscreen";
+		canvas.className = "unity-fullscreen";
 
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
+		function resizeUnityCanvasToScreen() {
+		  var container = document.querySelector("#unity-container");
+		  var canvas = document.querySelector("#unity-canvas");
 
+		  if (!container || !canvas) {
+			return;
+		  }
 
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
-      }
+		  container.style.width = window.innerWidth + "px";
+		  container.style.height = window.innerHeight + "px";
+
+		  canvas.style.width = "100%";
+		  canvas.style.height = "100%";
+		}
+
+		window.addEventListener("resize", resizeUnityCanvasToScreen);
+		window.addEventListener("orientationchange", resizeUnityCanvasToScreen);
+		resizeUnityCanvasToScreen();
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
@@ -117,9 +173,13 @@
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
               }).then((unityInstance) => {
                 document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
+					var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+
+				if (fullscreenButton) {
+				  fullscreenButton.onclick = () => {
+					unityInstance.SetFullscreen(1);
+				  };
+				}
 
               }).catch((message) => {
                 alert(message);
