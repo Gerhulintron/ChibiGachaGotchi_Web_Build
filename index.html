@@ -7,27 +7,32 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
 	<style>
+  :root {
+    --game-aspect-width: 9;
+    --game-aspect-height: 16;
+  }
+
   html, body {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #000;
+    background: #111;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #unity-container {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
+    position: relative !important;
+    width: min(100vw, calc(100vh * var(--game-aspect-width) / var(--game-aspect-height))) !important;
+    height: min(100vh, calc(100vw * var(--game-aspect-height) / var(--game-aspect-width))) !important;
     background: #000;
-  }
-
-  @supports (height: 100dvh) {
-    #unity-container {
-      height: 100dvh !important;
-    }
+    overflow: hidden;
   }
 
   #unity-canvas {
@@ -153,11 +158,8 @@
 			return;
 		  }
 
-		  container.style.width = window.innerWidth + "px";
-		  container.style.height = window.innerHeight + "px";
-
-		  canvas.style.width = "100%";
-		  canvas.style.height = "100%";
+		canvas.style.width = "100%";
+		canvas.style.height = "100%";
 		}
 
 		window.addEventListener("resize", resizeUnityCanvasToScreen);
