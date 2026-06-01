@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
-    <title>Unity Web Player | ChibiGachaGotchi</title>
+    <title>ChibiGachaGotchi</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
 
@@ -123,13 +123,18 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/ChibiGachaGotchi_WEB_BUILD.loader.js";
+
+      // Change this value when you need to hard-bust browser cache during testing.
+      // Safe to leave as-is for normal builds.
+      var buildVersion = "0.1.0";
+
+      var loaderUrl = buildUrl + "/ChibiGachaGotchi_WEB_BUILD.loader.js?v=" + buildVersion;
 
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/ChibiGachaGotchi_WEB_BUILD.data.unityweb",
-        frameworkUrl: buildUrl + "/ChibiGachaGotchi_WEB_BUILD.framework.js.unityweb",
-        codeUrl: buildUrl + "/ChibiGachaGotchi_WEB_BUILD.wasm.unityweb",
+        dataUrl: buildUrl + "/ChibiGachaGotchi_WEB_BUILD.data.unityweb?v=" + buildVersion,
+        frameworkUrl: buildUrl + "/ChibiGachaGotchi_WEB_BUILD.framework.js.unityweb?v=" + buildVersion,
+        codeUrl: buildUrl + "/ChibiGachaGotchi_WEB_BUILD.wasm.unityweb?v=" + buildVersion,
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "ChibiGachaGotchi",
